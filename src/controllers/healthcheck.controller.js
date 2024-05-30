@@ -1,47 +1,58 @@
-import { ApiError } from "../utils/ApiError.js";
+ import { asyncHandler } from "../utils/asyncHandler.js";
+ import {ApiError} from "../utils/ApiError.js"
+import { Patient } from "../models/health.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import {User} from "../models/user.model.js"
-import {Patient} from "../models/health.model.js"
 
-const healthcheck= asyncHandler(async(req,res)=>{
+ const registerPatient=asyncHandler(async(req,res)=>{
+  
+const {name,gender,age}=req.body
+console.log("name:-",name);
+console.log("gender:-",gender);
+console.log("age:-",age);
 
-    const {email,username,password}=req.body
-    console.log(email);
-    console.log(username);
-    console.log(password);
-// todo:-bild a healthcheck response that simply returns the ok status as json with a message
-   
-console.log("health check");
-    console.log('Request Body:', req.body);
+if (
+    [name,gender,age].some((field)=>
+        field?.trim()==="")
+) {
+    throw new ApiError(400,"All fields are required")
+}
 
-
-    const {gender,age}=req.body
-    console.log(gender);
-    console.log(age);
-
-
-   const PatientOne= await Patient.findOne({
-        $or:[{gender},{age}]
-     })
-     console.log(gender);
-   
-     console.log("patient is exist",PatientOne);
-    if(!PatientOne){
-        throw new ApiError(404,"patient does not exist")
-    }
-
-    return res
- .status(200)
- .json(new ApiResponse(200,{},"The health was good"))
-
+const existedPatient=await Patient.findOne({
+    $or:[{name},{age}]
 })
 
-export {
-    healthcheck,
+
+if (existedPatient) {
+    throw new ApiError(409,"user with email or username already exits")
+}
+
+ 
+const patient=await Patient.create({
+    name,
+    // diagonsedWith,
+    gender,
+    age,
+    address,
+    addmitedIn,
+    bloodGroup
+})
+
+
+const createdPatient= await User.findById(user._id).select(
+    "-addmitedIn"
+)
+
+
+if(!createdPatient){
+    throw new ApiError(500,"Something went wrong  while register patient")
 }
 
 
+return res.status(201).json(
+    new ApiResponse(200,createdPatient,"Patient registered Successfully")
+)
 
 
+ })
 
+ export {registerPatient}

@@ -1,12 +1,13 @@
 import { Router } from "express";
-import {upload} from "..//middlewares/multer.middleware.js"
-import { verifyJWT } from "../middlewares/auth.middleware.js";
-import {  healthcheck } from "../controllers/healthcheck.controller.js";
+import { registerPatient } from "../controllers/healthcheck.controller.js";
+
+
+import { Patient } from "../models/health.model.js";
 
 
 const router=Router()
 
-router.route("/health").post(healthcheck)
+router.route("/health").post(registerPatient)
 
 
 export default router

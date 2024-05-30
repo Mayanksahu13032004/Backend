@@ -1,6 +1,10 @@
 import mongoose,{Schema} from "mongoose";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
 
-const patientSchema=new Schema({
+
+const patientSchema=new Schema(
+  {
   name:{
     type:String,
     required:true
@@ -13,7 +17,7 @@ const patientSchema=new Schema({
     type:String,
     required:true
   },
-  patientId:{
+  age:{
     type:Number,
     required:true
   },
@@ -21,14 +25,14 @@ const patientSchema=new Schema({
     type:String,
     required:true
   },
-  gender:{
-    type:String,
-    enum:["M","F","O"],
-    required:true
-  },
+   gender:{
+     type:String,
+     enum:["M","F","O"],
+     required:true
+   },
   addmitedIn:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Hospital"
+    type:String,
+    required:true
   },
 },{timestamps:true});
 
